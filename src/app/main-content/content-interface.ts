@@ -3,6 +3,6 @@ export interface ContentInterface {
     isDeleted?: boolean,
     sizeBytes?: number,
     name: string,
-    sharing?: number,
+    sharing?: any,
     lastAccessedDate?: string
 }

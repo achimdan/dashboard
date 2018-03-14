@@ -22,6 +22,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSortModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material';
 
 import { ContentService } from './main-content/content-service';
 import { DataService } from './_services/data.service';
@@ -52,7 +53,8 @@ import { AddDataComponent } from './add-data/add-data.component';
 		MatDialogModule,
 		MatTableModule,
 		MatCheckboxModule,
-		MatSortModule
+		MatSortModule,
+		MatSelectModule
 	],
 	entryComponents: [
 		AddDataComponent,

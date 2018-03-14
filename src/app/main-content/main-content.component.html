@@ -2,32 +2,58 @@
 	Files
 </h1>
 
-  <mat-table #table [dataSource]="dataSource" matSort>
+<mat-table #table
+           [dataSource]="dataSource"
+		   matSort>
+		   
+	<!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+		<mat-header-cell *matHeaderCellDef>
+			<mat-checkbox (change)="$event ? masterToggle() : null"
+						[checked]="selection.hasValue() && isAllSelected()"
+						[indeterminate]="selection.hasValue() && !isAllSelected()">
+			</mat-checkbox>
+		</mat-header-cell>
+		<mat-cell *matCellDef="let row">
+			<mat-checkbox (click)="$event.stopPropagation()"
+						(change)="$event ? selection.toggle(row) : null"
+						[checked]="selection.isSelected(row)">
+			</mat-checkbox>
+		</mat-cell>
+	</ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
-    </ng-container>
+	<!-- Name Column -->
+	<ng-container matColumnDef="name">
+		<mat-header-cell *matHeaderCellDef mat-sort-header> 
+			Name 
+		</mat-header-cell>
+		<mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+	</ng-container>
 
-    <!-- Last Accesed Column -->
-    <ng-container matColumnDef="lastAccessedDate">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Last Accesed </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.lastAccessedDate | date:'fullDate'}} </mat-cell>
-    </ng-container>
+	<!-- Last Accesed Column -->
+	<ng-container matColumnDef="lastAccessedDate">
+		<mat-header-cell *matHeaderCellDef mat-sort-header> 
+			Last Accesed 
+		</mat-header-cell>
+		<mat-cell *matCellDef="let element"> {{element.lastAccessedDate | date:'fullDate'}} </mat-cell>
+	</ng-container>
 
-    <!-- Sharing Column -->
-    <ng-container matColumnDef="sharing">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Sharing </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.sharing}} </mat-cell>
-    </ng-container>
+	<!-- Sharing Column -->
+	<ng-container matColumnDef="sharing">
+		<mat-header-cell *matHeaderCellDef mat-sort-header> 
+			Sharing 
+		</mat-header-cell>
+		<mat-cell *matCellDef="let element"> {{element.sharing}} </mat-cell>
+	</ng-container>
 
-    <!-- Size Column -->
-    <ng-container matColumnDef="sizeBytes">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Size </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.sizeBytes}} </mat-cell>
-    </ng-container>
+	<!-- Size Column -->
+	<ng-container matColumnDef="sizeBytes">
+		<mat-header-cell *matHeaderCellDef mat-sort-header> 
+			Size
+		</mat-header-cell>
+		<mat-cell *matCellDef="let element"> {{element.sizeBytes}} </mat-cell>
+	</ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </mat-table>
+	<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+	<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

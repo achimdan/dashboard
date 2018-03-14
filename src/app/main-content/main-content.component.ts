@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContentService } from './content-service'
 import { ContentInterface } from '../main-content/content-interface';
 import { MatTableDataSource, MatSort } from '@angular/material';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
 	selector: 'main-content',
@@ -16,6 +17,7 @@ export class MainContentComponent implements OnInit {
 	
 	displayedColumns = ['name', 'lastAccessedDate', 'sharing', 'sizeBytes'];
 	dataSource:any;
+	selection = new SelectionModel<Element>(true, []);
 
 	constructor(private _contentService: ContentService) { }
 
