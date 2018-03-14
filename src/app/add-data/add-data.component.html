@@ -1,0 +1,20 @@
+
+<!-- for a normal project this must be wrapped into a form tag to do the validations -->
+
+<div mat-dialog-content>
+	<mat-form-field style="width:100%">
+		<input matInput 
+			placeholder="Name"
+			[(ngModel)]="data.name">
+	</mat-form-field>
+</div>
+<div mat-dialog-actions>
+	<button mat-button
+		(click)="sendData(data)">
+		Ok
+	</button>
+	<button mat-button
+		(click)="onNoClick()">
+		No Thanks
+	</button>
+</div>
