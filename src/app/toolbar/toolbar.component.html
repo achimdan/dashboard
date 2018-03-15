@@ -1,14 +1,14 @@
 <div class="toolbar">
 	<div class="toolbar-actions">
-		<button mat-button color="primary" (click)="openDialog()">
+		<button mat-button color="primary" *ngIf="!isShow" (click)="openDialog()">
 			<i class="fas fa-plus-square"></i>
 			<span>New</span>
 		</button>
-		<button mat-button color="primary">
+		<button mat-button color="primary" *ngIf="isShow">
 			<i class="fas fa-share-square"></i>
 			<span>Share</span>
 		</button>
-		<button mat-button color="primary">
+		<button mat-button color="primary" *ngIf="isShow">
 			<i class="fas fa-trash-alt"></i>
 			<span>Delete</span>
 		</button>

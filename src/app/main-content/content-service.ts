@@ -9,10 +9,16 @@ export class ContentService {
 	public objects: ContentInterface[];
 
 	public dataList: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	
+	private toShowButtons: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	whatToShow = this.toShowButtons.asObservable();
+	
+	private filters: BehaviorSubject<string> = new BehaviorSubject<string>('ALL');
+	filterFiles = this.filters.asObservable();
 
 	constructor(private _dataService: DataService) { }
 
-	public getDataList() {
+	public getDataList(filter) {
 		this._dataService
 			.getAllData<ContentInterface>('../assets/data/data.json')
 			.subscribe((data: ContentInterface) => this._response  = data,
@@ -21,13 +27,22 @@ export class ContentService {
 				},
 				() => {
 					this.objects = this._response;
-					
 					// maybe another method 
-					this.objects.forEach(each => {
-						if(each.sharing === 1) each.sharing = 'Public';
-						else if (each.sharing === 2) each.sharing = 'Sharerd';
-						else each.sharing = 'Private'
-					})
+					// this.objects.forEach((each,index) => {
+					// 	if (filter === 'DELETED') {
+					// 		if (each.isDeleted === true) {
+					// 			this.objects.splice(index, 1);
+					// 		}
+					// 	} else if (filter === 'DATE') {
+					// 		if (each.isDeleted === true) {
+					// 			this.objects.splice(index, 1);
+					// 		}
+					// 	}
+					// 	if(each.sharing === 1) each.sharing = 'Public';
+					// 	else if (each.sharing === 2) each.sharing = 'Sharerd';
+					// 	else each.sharing = 'Private'
+					// })
+					console.log(this.objects);
 
 					this.dataList.next(true);
 				});
@@ -53,6 +68,14 @@ export class ContentService {
 			this.dataList.next(true);
 			console.log(this.objects);
 		}
+	}
+
+	public showButtons(value) {
+		this.toShowButtons.next(value);
+	}
+
+	public sendFilter(value) {
+		this.filters.next(value);
 	}
 
 

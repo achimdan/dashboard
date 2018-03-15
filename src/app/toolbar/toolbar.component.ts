@@ -1,4 +1,5 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { ContentService } from '../main-content/content-service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AddDataComponent } from '../add-data/add-data.component'
 
@@ -7,16 +8,21 @@ import { AddDataComponent } from '../add-data/add-data.component'
 	templateUrl: './toolbar.component.html',
 	styleUrls: ['./toolbar.component.less']
 })
-export class ToolbarComponent{
-	
-	name: string;
+export class ToolbarComponent implements OnInit {
 
-	constructor(public dialog: MatDialog) { }
+	name: string;
+	isShow: boolean = true;
+
+	constructor(public dialog: MatDialog, private _contentService: ContentService) { }
+
+	ngOnInit() {
+		this._contentService.whatToShow.subscribe( isShow => this.isShow = isShow);
+	}
 
 	openDialog(): void {
 		let dialogRef = this.dialog.open(AddDataComponent, {
 			width: '500px',
 			data: { name: this.name }
 		});
-	  }
+	}
 }

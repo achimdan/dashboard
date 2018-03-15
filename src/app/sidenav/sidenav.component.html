@@ -1,6 +1,7 @@
 <div class="admin-nav">
 	<button mat-button 
 		*ngFor="let button of navigation"
+		(click)="filterFiles(button.filter)"
 		class="nav-button">
 		<div class="grid-button">
 			<i [class]="button.icon"></i>

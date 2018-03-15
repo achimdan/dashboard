@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ContentService } from './content-service'
+import { ContentService } from './content-service';
 import { ContentInterface } from '../main-content/content-interface';
 import { MatTableDataSource, MatSort } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -10,27 +10,78 @@ import { SelectionModel } from '@angular/cdk/collections';
 	styleUrls: ['./main-content.component.less']
 })
 export class MainContentComponent implements OnInit {
-	
+
 	@ViewChild(MatSort) sort: MatSort;
-	
+
 	private objects: any;
-	
-	displayedColumns = ['name', 'lastAccessedDate', 'sharing', 'sizeBytes'];
-	dataSource:any;
-	selection = new SelectionModel<Element>(true, []);
+	private selectedRows = [];
+	private filter: string;
+
+	displayedColumns = ['select', 'name', 'lastAccessedDate', 'sharing', 'sizeBytes'];
+	dataSource: any;
+	selection = new SelectionModel<any>(true, []);
 
 	constructor(private _contentService: ContentService) { }
 
-	ngOnInit() {
+	isAllSelected() {
+		const numSelected = this.selection.selected.length;
+		const numRows = this.dataSource.data.length;
+		return numSelected === numRows;
+	}
 
-		this._contentService.getDataList();
+	toggleAll() {
+		this.isAllSelected() ?
+			this.selection.clear() :
+			this.dataSource.data.forEach(row => this.selection.select(row));
+	}
+
+	selectOne(selection, row) {
+		event.stopPropagation();
+		
+		if (selection === true) {
+			this._contentService.showButtons(true);
+		} else {
+			this._contentService.showButtons(false);
+		}
+		console.log(selection);
+		console.log(row);
+	}
+
+	ngOnInit() {
+		this._contentService.filterFiles.subscribe(
+			value => {
+				this.filter = value;
+				console.log(value);
+				this._contentService.dataList.next(true);
+			}
+		);
+		this._contentService.getDataList(this.filter);
 		this._contentService.dataList
 			.subscribe(
 				values => {
 					if (values) {
 						this.objects = this._contentService.objects;
+						
+						if (this.objects) {
+							this.objects.forEach((each,index) => {
+								if (this.filter === 'DELETED') {
+									if (each.isDeleted === true) {
+										this.objects.splice(index, 1);
+									}
+								} else if (this.filter === 'DATE') {
+									if (each.isDeleted === true) {
+										this.objects.splice(index, 1);
+									}
+								}
+								if(each.sharing === 1) each.sharing = 'Public';
+								else if (each.sharing === 2) each.sharing = 'Sharerd';
+								else each.sharing = 'Private'
+							})
+						}
+
+
 						this.dataSource = new MatTableDataSource(this.objects);
-						this.dataSource.sort = this.sort;	
+						this.dataSource.sort = this.sort;
 						this._contentService.dataList.next(false);
 					}
 				}
