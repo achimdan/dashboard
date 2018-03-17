@@ -20,7 +20,8 @@
 			</mat-checkbox>
 		</mat-cell> -->
 		<mat-cell *matCellDef="let row; let i = index">
-			<mat-checkbox (change)="onChange($event)" [value]="row">
+			<mat-checkbox (change)="onChange($event)" 
+				[value]="row">
 			</mat-checkbox>
 		</mat-cell>
 	</ng-container>

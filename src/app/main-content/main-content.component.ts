@@ -22,38 +22,9 @@ export class MainContentComponent implements OnInit {
 	dataSource: any;
 	selection = new SelectionModel<any>(true, []);
 
-	interestFormGroup : FormGroup;
+	objectsFormGroup : FormGroup;
 
 	constructor(private _contentService: ContentService, private formBuilder: FormBuilder) { }
-
-	isAllSelected() {
-		const numSelected = this.selection.selected.length;
-		const numRows = this.dataSource.data.length;
-		return numSelected === numRows;
-	}
-
-	toggleAll() {
-		this.isAllSelected() ?
-			this.selection.clear() :
-			this.dataSource.data.forEach(row => this.selection.select(row));
-	}
-
-	selectOne(selection, row, index) {
-		console.log(selection, index);
-		// row.selection = selection;
-		// if (selection === true) {
-		// 	this.selectedRows.push(row);
-		// } else {
-		// 	this.selectedRows.splice(index,1);
-		// }
-
-		// if (this.selectedRows.length >= 1) {
-		// 	this._contentService.showButtons(true);
-		// } else {
-		// 	this._contentService.showButtons(false);
-		// }
-		// console.log(this.selectedRows);
-	}
 
 	ngOnInit() {
 		this._contentService.filterFiles.subscribe(
@@ -72,6 +43,7 @@ export class MainContentComponent implements OnInit {
 
 						if (this.objects) {
 							this.objects.forEach((each, index) => {
+								each.sizeBytes = this._contentService.niceBytes(each.sizeBytes);
 								if (this.filter === 'DELETED') {
 									if (each.isDeleted === true) {
 										this.objects.splice(index, 1);
@@ -95,28 +67,43 @@ export class MainContentComponent implements OnInit {
 				}
 			);
 
-		this.interestFormGroup = this.formBuilder.group({
+		this.objectsFormGroup = this.formBuilder.group({
 			objects: this.formBuilder.array([])
 		});
 		
-		
-		setTimeout((res) => {
-			this.objects = this.selectedRows;
-		});	
+	}
+
+	isAllSelected() {
+		const numSelected = this.selection.selected.length;
+		const numRows = this.dataSource.data.length;
+		return numSelected === numRows;
+	}
+
+	toggleAll() {
+		this.isAllSelected() ?
+			this.selection.clear() :
+			this.dataSource.data.forEach(row => this.selection.select(row));
 	}
 
 	onChange(event) {
 
-		const objects = <FormArray>this.interestFormGroup.get('objects') as FormArray;
+		this._contentService.onChange(event);
 
-		if (event.checked) {
-			objects.push(new FormControl(event.source.value))
-		} else {
-			const i = objects.controls.findIndex(x => x.value === event.source.value);
-			objects.removeAt(i);
-		}
+		// const objects = <FormArray>this.objectsFormGroup.get('objects') as FormArray;
 
-		console.log(this.interestFormGroup.value);
+		// if (event.checked) {
+		// 	objects.push(new FormControl(event.source.value))
+		// } else {
+		// 	const i = objects.controls.findIndex(x => x.value === event.source.value);
+		// 	objects.removeAt(i);
+		// }
+		// if (this.objectsFormGroup.value.objects.length >= 1) {
+		// 	this._contentService.showButtons(true);
+		// } else {
+		// 	this._contentService.showButtons(false);
+		// }
+
+		// this._contentService.theFiles = this.objectsFormGroup.value;
 
 	}
 

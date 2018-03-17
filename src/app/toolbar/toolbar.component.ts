@@ -19,10 +19,14 @@ export class ToolbarComponent implements OnInit {
 		this._contentService.whatToShow.subscribe( isShow => this.isShow = isShow);
 	}
 
-	openDialog(): void {
+	newFile() {
 		let dialogRef = this.dialog.open(AddDataComponent, {
 			width: '500px',
 			data: { name: this.name }
 		});
+	}
+
+	deleteFiles() {
+		this._contentService.deleteFiles(this._contentService.theFiles);
 	}
 }

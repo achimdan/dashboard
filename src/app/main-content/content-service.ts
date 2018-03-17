@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { DataService } from '../_services/data.service';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { ContentInterface } from '../main-content/content-interface';
+import { Observable } from 'rxjs/Observable';
+import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 
 @Injectable()
 export class ContentService {
@@ -16,7 +18,25 @@ export class ContentService {
 	private filters: BehaviorSubject<string> = new BehaviorSubject<string>('ALL');
 	filterFiles = this.filters.asObservable();
 
-	constructor(private _dataService: DataService) { }
+	objectsFormGroup : FormGroup;
+
+	theFiles = [];
+
+	units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+	constructor(private _dataService: DataService, private formBuilder: FormBuilder) {
+		this.objectsFormGroup = this.formBuilder.group({
+			objects: this.formBuilder.array([])
+		});
+	 }
+
+	public niceBytes(x){
+		let l = 0, n = parseInt(x, 10) || 0;
+	  
+		while(n >= 1024 && ++l)
+			n = n/1024;
+	  
+		return(n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + this.units[l]);
+	}
 
 	public getDataList(filter) {
 		this._dataService
@@ -27,23 +47,6 @@ export class ContentService {
 				},
 				() => {
 					this.objects = this._response;
-					// maybe another method 
-					// this.objects.forEach((each,index) => {
-					// 	if (filter === 'DELETED') {
-					// 		if (each.isDeleted === true) {
-					// 			this.objects.splice(index, 1);
-					// 		}
-					// 	} else if (filter === 'DATE') {
-					// 		if (each.isDeleted === true) {
-					// 			this.objects.splice(index, 1);
-					// 		}
-					// 	}
-					// 	if(each.sharing === 1) each.sharing = 'Public';
-					// 	else if (each.sharing === 2) each.sharing = 'Sharerd';
-					// 	else each.sharing = 'Private'
-					// })
-					console.log(this.objects);
-
 					this.dataList.next(true);
 				});
 	}
@@ -76,6 +79,32 @@ export class ContentService {
 
 	public sendFilter(value) {
 		this.filters.next(value);
+	}
+
+	onChange(event) {
+
+		const objects = <FormArray>this.objectsFormGroup.get('objects') as FormArray;
+
+		if (event.checked) {
+			objects.push(new FormControl(event.source.value))
+		} else {
+			const i = objects.controls.findIndex(x => x.value === event.source.value);
+			objects.removeAt(i);
+		}
+		if (this.objectsFormGroup.value.objects.length >= 1) {
+			this.showButtons(true);
+		} else {
+			this.showButtons(false);
+		}
+
+		this.theFiles = this.objectsFormGroup.value;
+
+	}
+	
+	public deleteFiles(files) {
+		this.objects = this.objects.filter((i) => (files.objects.indexOf(i) === -1));
+		this.dataList.next(true);
+		this.showButtons(false);
 	}
 
 
