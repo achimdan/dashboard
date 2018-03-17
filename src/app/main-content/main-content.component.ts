@@ -15,7 +15,6 @@ export class MainContentComponent implements OnInit {
 	@ViewChild(MatSort) sort: MatSort;
 
 	private objects: any;
-	private selectedRows:any = [];
 	private filter: string;
 
 	displayedColumns = ['select', 'name', 'lastAccessedDate', 'sharing', 'sizeBytes'];

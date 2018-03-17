@@ -5,6 +5,8 @@ import { FormControl } from '@angular/forms';
 import { startWith } from 'rxjs/operators/startWith';
 import { map } from 'rxjs/operators/map';
 
+import { ContentService } from './main-content/content-service';
+
 export class State {
 	constructor(public name: string, public population: string, public flag: string) { }
 }
@@ -23,64 +25,53 @@ export class State {
 	]
 })
 export class AppComponent implements OnInit {
-	stateCtrl: FormControl;
-	filteredStates: Observable<any[]>;
 
-	states: State[] = [
-		{
-			name: 'Arkansas',
-			population: '2.978M',
-			// https://commons.wikimedia.org/wiki/File:Flag_of_Arkansas.svg
-			flag: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Arkansas.svg'
-		},
-		{
-			name: 'California',
-			population: '39.14M',
-			// https://commons.wikimedia.org/wiki/File:Flag_of_California.svg
-			flag: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_California.svg'
-		},
-		{
-			name: 'Florida',
-			population: '20.27M',
-			// https://commons.wikimedia.org/wiki/File:Flag_of_Florida.svg
-			flag: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Florida.svg'
-		},
-		{
-			name: 'Texas',
-			population: '27.47M',
-			// https://commons.wikimedia.org/wiki/File:Flag_of_Texas.svg
-			flag: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Texas.svg'
-		}
-	];
-	
-	styleHeight: any
-
+	private myControl: FormControl = new FormControl();
+	private objects: any;
+	private filter: string;
+	private styleHeight: any
+	private filteredOptions: Observable<string[]>;
 	public options = {
 		position: ["top", "right"],
 		timeOut: 5000,
 		lastOnBottom: true
 	}
 
-	constructor() {
-		this.stateCtrl = new FormControl();
-		this.filteredStates = this.stateCtrl.valueChanges
+	constructor(private _contentService: ContentService, ) {
+		this.filteredOptions = this.myControl.valueChanges
 			.pipe(
 				startWith(''),
-				map(state => state ? this.filterStates(state) : this.states.slice())
+				map(val => this.filterValues(val))
 			);
-	}
+	 }
 
-	filterStates(name: string) {
-		return this.states.filter(state =>
-			state.name.toLowerCase().indexOf(name.toLowerCase()) === 0);
-	}
 
 	ngOnInit() {
-		this.styleHeight = window.innerHeight - 90 + 'px'
+		this.styleHeight = window.innerHeight - 90 + 'px';
+		this._contentService.filterFiles.subscribe(
+			value => {
+				this.filter = value;
+				this._contentService.dataList.next(true);
+			}
+		);
+		this._contentService.dataList
+			.subscribe(
+				values => {
+					if (values) {
+						this.objects = this._contentService.objects;
+					}
+				}
+			);
+
+	}
+
+	filterValues(val: string): string[] {
+		return this.objects.filter(option =>
+			option.toLowerCase().indexOf(val.toLowerCase()) === 0);
 	}
 
 	onResize(event: any) {
-		this.styleHeight = event.target.innerHeight - 90 + 'px'
+		this.styleHeight = event.target.innerHeight - 90 + 'px';
 	}
 
 }
