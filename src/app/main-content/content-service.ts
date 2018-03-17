@@ -19,6 +19,7 @@ export class ContentService {
 	filterFiles = this.filters.asObservable();
 
 	objectsFormGroup : FormGroup;
+	formObjects: any;
 
 	theFiles = [];
 
@@ -83,13 +84,13 @@ export class ContentService {
 
 	onChange(event) {
 
-		const objects = <FormArray>this.objectsFormGroup.get('objects') as FormArray;
+		this.formObjects = <FormArray>this.objectsFormGroup.get('objects') as FormArray;
 
 		if (event.checked) {
-			objects.push(new FormControl(event.source.value))
+			this.formObjects.push(new FormControl(event.source.value))
 		} else {
-			const i = objects.controls.findIndex(x => x.value === event.source.value);
-			objects.removeAt(i);
+			const i = this.formObjects.controls.findIndex(x => x.value === event.source.value);
+			this.formObjects.removeAt(i);
 		}
 		if (this.objectsFormGroup.value.objects.length >= 1) {
 			this.showButtons(true);
@@ -103,6 +104,8 @@ export class ContentService {
 	
 	public deleteFiles(files) {
 		this.objects = this.objects.filter((i) => (files.objects.indexOf(i) === -1));
+		this.objectsFormGroup.value.objects.length = 0;
+		this.formObjects.controls = [];
 		this.dataList.next(true);
 		this.showButtons(false);
 	}

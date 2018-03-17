@@ -86,25 +86,7 @@ export class MainContentComponent implements OnInit {
 	}
 
 	onChange(event) {
-
 		this._contentService.onChange(event);
-
-		// const objects = <FormArray>this.objectsFormGroup.get('objects') as FormArray;
-
-		// if (event.checked) {
-		// 	objects.push(new FormControl(event.source.value))
-		// } else {
-		// 	const i = objects.controls.findIndex(x => x.value === event.source.value);
-		// 	objects.removeAt(i);
-		// }
-		// if (this.objectsFormGroup.value.objects.length >= 1) {
-		// 	this._contentService.showButtons(true);
-		// } else {
-		// 	this._contentService.showButtons(false);
-		// }
-
-		// this._contentService.theFiles = this.objectsFormGroup.value;
-
 	}
 
 }
