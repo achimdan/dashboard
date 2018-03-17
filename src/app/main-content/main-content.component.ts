@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 import { ContentService } from './content-service';
 import { ContentInterface } from '../main-content/content-interface';
 import { MatTableDataSource, MatSort } from '@angular/material';
@@ -14,14 +15,16 @@ export class MainContentComponent implements OnInit {
 	@ViewChild(MatSort) sort: MatSort;
 
 	private objects: any;
-	private selectedRows = [];
+	private selectedRows:any = [];
 	private filter: string;
 
 	displayedColumns = ['select', 'name', 'lastAccessedDate', 'sharing', 'sizeBytes'];
 	dataSource: any;
 	selection = new SelectionModel<any>(true, []);
 
-	constructor(private _contentService: ContentService) { }
+	interestFormGroup : FormGroup;
+
+	constructor(private _contentService: ContentService, private formBuilder: FormBuilder) { }
 
 	isAllSelected() {
 		const numSelected = this.selection.selected.length;
@@ -35,16 +38,21 @@ export class MainContentComponent implements OnInit {
 			this.dataSource.data.forEach(row => this.selection.select(row));
 	}
 
-	selectOne(selection, row) {
-		event.stopPropagation();
-		
-		if (selection === true) {
-			this._contentService.showButtons(true);
-		} else {
-			this._contentService.showButtons(false);
-		}
-		console.log(selection);
-		console.log(row);
+	selectOne(selection, row, index) {
+		console.log(selection, index);
+		// row.selection = selection;
+		// if (selection === true) {
+		// 	this.selectedRows.push(row);
+		// } else {
+		// 	this.selectedRows.splice(index,1);
+		// }
+
+		// if (this.selectedRows.length >= 1) {
+		// 	this._contentService.showButtons(true);
+		// } else {
+		// 	this._contentService.showButtons(false);
+		// }
+		// console.log(this.selectedRows);
 	}
 
 	ngOnInit() {
@@ -61,9 +69,9 @@ export class MainContentComponent implements OnInit {
 				values => {
 					if (values) {
 						this.objects = this._contentService.objects;
-						
+
 						if (this.objects) {
-							this.objects.forEach((each,index) => {
+							this.objects.forEach((each, index) => {
 								if (this.filter === 'DELETED') {
 									if (each.isDeleted === true) {
 										this.objects.splice(index, 1);
@@ -73,7 +81,7 @@ export class MainContentComponent implements OnInit {
 										this.objects.splice(index, 1);
 									}
 								}
-								if(each.sharing === 1) each.sharing = 'Public';
+								if (each.sharing === 1) each.sharing = 'Public';
 								else if (each.sharing === 2) each.sharing = 'Sharerd';
 								else each.sharing = 'Private'
 							})
@@ -86,6 +94,30 @@ export class MainContentComponent implements OnInit {
 					}
 				}
 			);
+
+		this.interestFormGroup = this.formBuilder.group({
+			objects: this.formBuilder.array([])
+		});
+		
+		
+		setTimeout((res) => {
+			this.objects = this.selectedRows;
+		});	
+	}
+
+	onChange(event) {
+
+		const objects = <FormArray>this.interestFormGroup.get('objects') as FormArray;
+
+		if (event.checked) {
+			objects.push(new FormControl(event.source.value))
+		} else {
+			const i = objects.controls.findIndex(x => x.value === event.source.value);
+			objects.removeAt(i);
+		}
+
+		console.log(this.interestFormGroup.value);
+
 	}
 
 }
