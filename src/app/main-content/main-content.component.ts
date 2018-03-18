@@ -32,6 +32,11 @@ export class MainContentComponent implements OnInit {
 				values => {
 					if (values) {
 						this.objects = this._contentService.objects;
+						this.objects.forEach(element => {
+							if(element.sharing === 1) element.sharing = 'Public';
+							else if (element.sharing === 2) element.sharing = 'Sharerd';
+							else element.sharing = 'Private';
+						});
 						this.dataSource = new MatTableDataSource(this.objects);
 						this.dataSource.sort = this.sort;
 					}

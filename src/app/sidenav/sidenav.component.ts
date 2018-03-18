@@ -10,7 +10,7 @@ export class SidenavComponent implements OnInit {
 
 	@Input() displayFromParent = true
 	navigation: Array<{}>
-
+	selectedButton: any;
 	constructor(private _contentService: ContentService) { }
 
 	ngOnInit() {
@@ -26,16 +26,22 @@ export class SidenavComponent implements OnInit {
 				icon: 'fas fa-angle-right',
 				filter: 'DATE'
 			},{
-				id: 2,
+				id: 3,
 				name: 'Recycle bin',
 				icon: 'fas fa-angle-right',
 				filter: 'DELETED'
 			}
 		];
+
+		this.filterFiles(this.navigation[0]);
 	}
 
-	filterFiles(filter) {
-		this._contentService.sendFilter(filter || 'ALL');
+	filterFiles(button: any) {
+		this._contentService.showButtons(false);
+		this.selectedButton = button;
+		this._contentService.sendFilter(button.filter || 'ALL');
+		this._contentService.changeState(button.filter);
 	}
+
 
 }

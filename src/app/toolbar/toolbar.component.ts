@@ -12,11 +12,23 @@ export class ToolbarComponent implements OnInit {
 
 	name: string;
 	isShow: boolean = true;
+	isResored: boolean = false;
+	state: string;
 
 	constructor(public dialog: MatDialog, private _contentService: ContentService) { }
 
 	ngOnInit() {
-		this._contentService.whatToShow.subscribe( isShow => this.isShow = isShow);
+		this._contentService.viewState.subscribe( state => {
+			this.state = state
+			console.log(this.state);
+			if (this.state !== 'DELETED') {
+				this._contentService.whatToShow.subscribe( isShow => this.isShow = isShow);
+				this.isResored = false;
+			} else {
+				this._contentService.whatToShow.subscribe( isShow => this.isShow = false);
+				this.isResored = true;
+			}
+		});
 	}
 
 	newFile() {
@@ -28,5 +40,9 @@ export class ToolbarComponent implements OnInit {
 
 	deleteFiles() {
 		this._contentService.deleteFiles(this._contentService.theFiles);
+	}
+	
+	restoreFiles() {
+		this._contentService.restoreFiles(this._contentService.theFiles);
 	}
 }

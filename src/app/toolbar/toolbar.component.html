@@ -1,16 +1,23 @@
 <div class="toolbar">
 	<div class="toolbar-actions">
-		<button mat-button color="primary" *ngIf="!isShow" (click)="newFile()">
+		<button mat-button color="primary" *ngIf="!isShow" (click)="newFile()" 
+			[ngClass]="{isHide: state === 'DELETED'}">
 			<i class="fas fa-plus-square"></i>
 			<span>New</span>
 		</button>
-		<button mat-button color="primary" *ngIf="isShow">
-			<i class="fas fa-share-square"></i>
-			<span>Share</span>
-		</button>
-		<button mat-button color="primary" *ngIf="isShow" (click)="deleteFiles()">
+		<span *ngIf="isShow">
+			<button mat-button color="primary">
+				<i class="fas fa-share-square"></i>
+				<span>Share</span>
+			</button>
+			<button mat-button color="primary" (click)="deleteFiles()">
+				<i class="fas fa-trash-alt"></i>
+				<span>Delete</span>
+			</button>
+		</span>	
+		<button mat-button color="primary" *ngIf="isResored" (click)="restoreFiles()">
 			<i class="fas fa-trash-alt"></i>
-			<span>Delete</span>
+			<span>Restore</span>
 		</button>
 	</div>
 </div>

@@ -10,14 +10,14 @@ export class ContentService {
 	private _response : any;
 	public objects: ContentInterface[];
 
+	private stateSource: BehaviorSubject<string> = new BehaviorSubject<string>('ALL');
+	viewState = this.stateSource.asObservable();
+
 	public dataList: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	observableData = this.dataList.asObservable();
 
 	private toShowButtons: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	whatToShow = this.toShowButtons.asObservable();
-	
-	// private filters: BehaviorSubject<string> = new BehaviorSubject<string>('ALL');
-	// filterFiles = this.filters.asObservable();
 
 	private filters:string;
 
@@ -26,27 +26,21 @@ export class ContentService {
 
 	theFiles = [];
 
-	units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 	constructor(private _dataService: DataService, private formBuilder: FormBuilder) {
 		this.objectsFormGroup = this.formBuilder.group({
 			objects: this.formBuilder.array([])
 		});
-	 }
+	}
 
-	public niceBytes(x){
-		let l = 0, n = parseInt(x, 10) || 0;
-	  
-		while(n >= 1024 && ++l)
-			n = n/1024;
-	  
-		return(n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + this.units[l]);
+	public changeState(state: string) {
+		this.stateSource.next(state);
 	}
 
 	public getDataList(filter) {
 		this.filters = filter || 'ALL';
 		this._dataService
 			.getAllData<ContentInterface>('../assets/data/data.json')
-			.subscribe((data: ContentInterface) => this._response  = data,
+			.subscribe((data: ContentInterface) => this._response = data,
 				error => () => {
 					console.log(error);
 				},
@@ -63,7 +57,6 @@ export class ContentService {
 							return object.lastAccessedDate >= startDate;
 						});
 					}
-					console.log(this.objects);
 					this.dataList.next(true);
 				});
 	}
@@ -121,7 +114,18 @@ export class ContentService {
 	public deleteFiles(files) {
 		this.objects = this.objects.filter((i) => (files.objects.indexOf(i) === -1));
 		for (let object of files.objects) {
-			object.isDeleted = true
+			object.isDeleted = true;
+		}
+		this.objectsFormGroup.value.objects.length = 0;
+		this.formObjects.controls = [];
+		this.dataList.next(true);
+		this.showButtons(false);
+	}
+
+	public restoreFiles(files) {
+		this.objects = this.objects.filter((i) => (files.objects.indexOf(i) === -1));
+		for (let object of files.objects) {
+			object.isDeleted = false;
 		}
 		this.objectsFormGroup.value.objects.length = 0;
 		this.formObjects.controls = [];

@@ -1,11 +1,15 @@
 <div class="admin-nav">
 	<button mat-button 
-		*ngFor="let button of navigation"
-		(click)="filterFiles(button.filter)"
+		*ngFor="let button of navigation; let i = index"
+		(click)="filterFiles(button)"
 		class="nav-button">
 		<div class="grid-button">
 			<i [class]="button.icon"></i>
-			<span *ngIf="displayFromParent">{{button.name}}</span>
+			<span *ngIf="displayFromParent" 
+				class="admin-btn"
+				[ngClass]="{isSelected: button === selectedButton}">
+				{{button.name}}
+			</span>
 		</div>
 	</button>
 </div>
