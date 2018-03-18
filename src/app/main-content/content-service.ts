@@ -11,12 +11,15 @@ export class ContentService {
 	public objects: ContentInterface[];
 
 	public dataList: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-	
+	observableData = this.dataList.asObservable();
+
 	private toShowButtons: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	whatToShow = this.toShowButtons.asObservable();
 	
-	private filters: BehaviorSubject<string> = new BehaviorSubject<string>('ALL');
-	filterFiles = this.filters.asObservable();
+	// private filters: BehaviorSubject<string> = new BehaviorSubject<string>('ALL');
+	// filterFiles = this.filters.asObservable();
+
+	private filters:string;
 
 	objectsFormGroup : FormGroup;
 	formObjects: any;
@@ -40,6 +43,7 @@ export class ContentService {
 	}
 
 	public getDataList(filter) {
+		this.filters = filter || 'ALL';
 		this._dataService
 			.getAllData<ContentInterface>('../assets/data/data.json')
 			.subscribe((data: ContentInterface) => this._response  = data,
@@ -47,7 +51,19 @@ export class ContentService {
 					console.log(error);
 				},
 				() => {
-					this.objects = this._response;
+					if (this.filters === 'ALL') {
+						this.objects = this._response.filter((object) => object.isDeleted === false );
+					} else if (this.filters === 'DELETED') {
+						this.objects = this._response.filter((object) => object.isDeleted === true );
+					} else {
+						const startDate = new Date('2018-03-09T03:57:32');
+						const endDate = new Date();
+						this.objects = this._response.filter((object) => {
+							object.lastAccessedDate = new Date(object.lastAccessedDate);
+							return object.lastAccessedDate >= startDate;
+						});
+					}
+					console.log(this.objects);
 					this.dataList.next(true);
 				});
 	}
@@ -78,8 +94,8 @@ export class ContentService {
 		this.toShowButtons.next(value);
 	}
 
-	public sendFilter(value) {
-		this.filters.next(value);
+	public sendFilter(filter) {
+		this.getDataList(filter);	
 	}
 
 	onChange(event) {
@@ -104,6 +120,9 @@ export class ContentService {
 	
 	public deleteFiles(files) {
 		this.objects = this.objects.filter((i) => (files.objects.indexOf(i) === -1));
+		for (let object of files.objects) {
+			object.isDeleted = true
+		}
 		this.objectsFormGroup.value.objects.length = 0;
 		this.formObjects.controls = [];
 		this.dataList.next(true);

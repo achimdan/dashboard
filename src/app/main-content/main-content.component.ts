@@ -26,42 +26,14 @@ export class MainContentComponent implements OnInit {
 	constructor(private _contentService: ContentService, private formBuilder: FormBuilder) { }
 
 	ngOnInit() {
-		this._contentService.filterFiles.subscribe(
-			value => {
-				this.filter = value;
-				console.log(value);
-				this._contentService.dataList.next(true);
-			}
-		);
 		this._contentService.getDataList(this.filter);
-		this._contentService.dataList
+		this._contentService.observableData
 			.subscribe(
 				values => {
 					if (values) {
 						this.objects = this._contentService.objects;
-
-						if (this.objects) {
-							this.objects.forEach((each, index) => {
-								each.sizeBytes = this._contentService.niceBytes(each.sizeBytes);
-								if (this.filter === 'DELETED') {
-									if (each.isDeleted === true) {
-										this.objects.splice(index, 1);
-									}
-								} else if (this.filter === 'DATE') {
-									if (each.isDeleted === true) {
-										this.objects.splice(index, 1);
-									}
-								}
-								if (each.sharing === 1) each.sharing = 'Public';
-								else if (each.sharing === 2) each.sharing = 'Sharerd';
-								else each.sharing = 'Private'
-							})
-						}
-
-
 						this.dataSource = new MatTableDataSource(this.objects);
 						this.dataSource.sort = this.sort;
-						this._contentService.dataList.next(false);
 					}
 				}
 			);

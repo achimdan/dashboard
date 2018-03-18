@@ -48,20 +48,20 @@ export class AppComponent implements OnInit {
 
 	ngOnInit() {
 		this.styleHeight = window.innerHeight - 90 + 'px';
-		this._contentService.filterFiles.subscribe(
-			value => {
-				this.filter = value;
-				this._contentService.dataList.next(true);
-			}
-		);
-		this._contentService.dataList
-			.subscribe(
-				values => {
-					if (values) {
-						this.objects = this._contentService.objects;
-					}
-				}
-			);
+		// this._contentService.filterFiles.subscribe(
+		// 	value => {
+		// 		this.filter = value;
+		// 		this._contentService.dataList.next(true);
+		// 	}
+		// );
+		// this._contentService.observableData
+		// 	.subscribe(
+		// 		values => {
+		// 			if (values) {
+		// 				this.objects = this._contentService.objects;
+		// 			}
+		// 		}
+		// 	);
 
 	}
 
