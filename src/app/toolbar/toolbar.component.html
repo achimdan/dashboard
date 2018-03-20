@@ -6,7 +6,7 @@
 			<span>New</span>
 		</button>
 		<span *ngIf="isShow">
-			<button mat-button color="primary">
+			<button mat-button color="primary" (click)="changeState()">
 				<i class="fas fa-share-square"></i>
 				<span>Share</span>
 			</button>

@@ -45,4 +45,8 @@ export class ToolbarComponent implements OnInit {
 	restoreFiles() {
 		this._contentService.restoreFiles(this._contentService.theFiles);
 	}
+	
+	changeState() {
+		this._contentService.changeTheState(this._contentService.theFiles);
+	}
 }

@@ -28,6 +28,7 @@ import { ContentService } from './main-content/content-service';
 import { DataService } from './_services/data.service';
 import { AddDataComponent } from './add-data/add-data.component';
 import { SearchComponent } from './search/search.component';
+import { FilterPipe } from './filter.pipe';
 
 @NgModule({
 	declarations: [
@@ -36,7 +37,8 @@ import { SearchComponent } from './search/search.component';
 		ToolbarComponent,
 		MainContentComponent,
 		AddDataComponent,
-		SearchComponent
+		SearchComponent,
+		FilterPipe
 	],
 	imports: [
 		BrowserModule,
@@ -58,6 +60,9 @@ import { SearchComponent } from './search/search.component';
 		MatSortModule,
 		MatSelectModule
 	],
+	// exports: [
+	// 	FilterPipe
+	// ],
 	entryComponents: [
 		AddDataComponent,
 	],

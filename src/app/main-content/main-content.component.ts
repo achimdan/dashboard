@@ -26,17 +26,12 @@ export class MainContentComponent implements OnInit {
 	constructor(private _contentService: ContentService, private formBuilder: FormBuilder) { }
 
 	ngOnInit() {
-		this._contentService.getDataList(this.filter);
+		// this._contentService.getDataList(this.filter || 'ALL');
 		this._contentService.observableData
 			.subscribe(
 				values => {
 					if (values) {
 						this.objects = this._contentService.objects;
-						this.objects.forEach(element => {
-							if(element.sharing === 1) element.sharing = 'Public';
-							else if (element.sharing === 2) element.sharing = 'Sharerd';
-							else element.sharing = 'Private';
-						});
 						this.dataSource = new MatTableDataSource(this.objects);
 						this.dataSource.sort = this.sort;
 					}

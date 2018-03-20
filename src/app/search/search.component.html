@@ -1,14 +1,13 @@
-<form>
-	<mat-form-field>
-		<input placeholder="Search everything"
-			class="search"
-			(keyup)="searchTerm($event.target.value)"
-			matInput>
-		<mat-autocomplete #auto="matAutocomplete">
-			<mat-option *ngFor="let option of objects"
-			            [value]="option.name">
-				{{ option.name }}
-			</mat-option>
-		</mat-autocomplete>
-	</mat-form-field>
-</form>
+<mat-form-field>
+	<input placeholder="Search everything"
+		class="search"
+		(keyup)="search(keyword)"
+		[(ngModel)]="keyword"
+		matInput>
+	<ul *ngIf="isShow" class="search-list">
+		<li *ngFor="let object of objects | FilterPipe: keyword"
+			(click)="searchedObj(object)">
+			{{object.name}}
+		</li>
+	</ul>
+</mat-form-field>

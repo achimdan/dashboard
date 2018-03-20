@@ -16,8 +16,11 @@ export class ContentService {
 	private stateSource: BehaviorSubject<string> = new BehaviorSubject<string>('ALL');
 	viewState = this.stateSource.asObservable();
 
-	public dataList: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	private dataList: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	observableData = this.dataList.asObservable();
+	
+	private searchDataList: BehaviorSubject<string> = new BehaviorSubject<string>('SEARCH');
+	observableDataSearch = this.searchDataList.asObservable();
 
 	private toShowButtons: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	whatToShow = this.toShowButtons.asObservable();
@@ -28,8 +31,6 @@ export class ContentService {
 	formObjects: any;
 
 	theFiles = [];
-
-	observalbe = Observable.fromEvent(document.body, 'keyup');
 
 	constructor(private _dataService: DataService, private formBuilder: FormBuilder) {
 		this.objectsFormGroup = this.formBuilder.group({
@@ -62,6 +63,12 @@ export class ContentService {
 							return object.lastAccessedDate >= startDate;
 						});
 					}
+					this.objects.forEach(element => {
+						if(element.sharing === 1) element.sharing = 'Public';
+						else if (element.sharing === 2) element.sharing = 'Sharerd';
+						else element.sharing = 'Private';
+					});
+					// this.searchDataList.next('SEARCH');
 					this.dataList.next(true);
 				});
 	}
@@ -84,7 +91,6 @@ export class ContentService {
 			}
 			this.objects.push(dataObject);
 			this.dataList.next(true);
-			console.log(this.objects);
 		}
 	}
 
@@ -139,20 +145,12 @@ export class ContentService {
 		this.dataList.next(true);
 		this.showButtons(false);
 	}
-
-	public search(key) {
-		// this.objects = this.objects.filter((i) => (key.indexOf(i) === -1));
-		// return this.objects;
-
-		return this.observalbe
-			.pluck('target', 'value')
-			.debounceTime(700)
-			.distinctUntilChanged()
-			.map((data) => {
-				return data;
-			})
-			
+	
+	public changeTheState(files) {
+		this.objects = this.objects.filter((i) => (files.objects.indexOf(i) === -1));
+		for (let object of files.objects) {
+			object.sharing = 'Sharerd';
+		}
 	}
-
 
 }
