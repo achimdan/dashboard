@@ -3,11 +3,14 @@ import { DataService } from '../_services/data.service';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { ContentInterface } from '../main-content/content-interface';
 import { Observable } from 'rxjs/Observable';
+import { from } from 'rxjs/observable/from';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { pluck, debounceTime, map, distinctUntilChanged } from 'rxjs/operators';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 
 @Injectable()
 export class ContentService {
-	private _response : any;
+	private _response: any;
 	public objects: ContentInterface[];
 
 	private stateSource: BehaviorSubject<string> = new BehaviorSubject<string>('ALL');
@@ -19,12 +22,14 @@ export class ContentService {
 	private toShowButtons: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	whatToShow = this.toShowButtons.asObservable();
 
-	private filters:string;
+	private filters: string;
 
-	objectsFormGroup : FormGroup;
+	objectsFormGroup: FormGroup;
 	formObjects: any;
 
 	theFiles = [];
+
+	observalbe = Observable.fromEvent(document.body, 'keyup');
 
 	constructor(private _dataService: DataService, private formBuilder: FormBuilder) {
 		this.objectsFormGroup = this.formBuilder.group({
@@ -46,9 +51,9 @@ export class ContentService {
 				},
 				() => {
 					if (this.filters === 'ALL') {
-						this.objects = this._response.filter((object) => object.isDeleted === false );
+						this.objects = this._response.filter((object) => object.isDeleted === false);
 					} else if (this.filters === 'DELETED') {
-						this.objects = this._response.filter((object) => object.isDeleted === true );
+						this.objects = this._response.filter((object) => object.isDeleted === true);
 					} else {
 						const startDate = new Date('2018-03-09T03:57:32');
 						const endDate = new Date();
@@ -88,7 +93,7 @@ export class ContentService {
 	}
 
 	public sendFilter(filter) {
-		this.getDataList(filter);	
+		this.getDataList(filter);
 	}
 
 	onChange(event) {
@@ -110,11 +115,12 @@ export class ContentService {
 		this.theFiles = this.objectsFormGroup.value;
 
 	}
-	
+
 	public deleteFiles(files) {
 		this.objects = this.objects.filter((i) => (files.objects.indexOf(i) === -1));
 		for (let object of files.objects) {
 			object.isDeleted = true;
+			console.log(object.name + ' is deleted', object.isDeleted);
 		}
 		this.objectsFormGroup.value.objects.length = 0;
 		this.formObjects.controls = [];
@@ -126,11 +132,26 @@ export class ContentService {
 		this.objects = this.objects.filter((i) => (files.objects.indexOf(i) === -1));
 		for (let object of files.objects) {
 			object.isDeleted = false;
+			console.log(object.name + ' is deleted', object.isDeleted);
 		}
 		this.objectsFormGroup.value.objects.length = 0;
 		this.formObjects.controls = [];
 		this.dataList.next(true);
 		this.showButtons(false);
+	}
+
+	public search(key) {
+		// this.objects = this.objects.filter((i) => (key.indexOf(i) === -1));
+		// return this.objects;
+
+		return this.observalbe
+			.pluck('target', 'value')
+			.debounceTime(700)
+			.distinctUntilChanged()
+			.map((data) => {
+				return data;
+			})
+			
 	}
 
 

@@ -3,21 +3,7 @@
 	     id="aside">
 		<div class="admin-wrapper">
 			<div>
-				<form>
-					<mat-form-field>
-						<input type="text"
-						       placeholder="Search everything"
-						       matInput
-						       [formControl]="myControl"
-						       [matAutocomplete]="auto">
-						<mat-autocomplete #auto="matAutocomplete">
-							<mat-option *ngFor="let option of objects"
-							            [value]="option.name">
-								{{ option.name }}
-							</mat-option>
-						</mat-autocomplete>
-					</mat-form-field>
-				</form>
+				<app-search></app-search>
 			</div>
 		</div>
 		<app-sidenav></app-sidenav>

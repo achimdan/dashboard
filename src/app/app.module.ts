@@ -27,6 +27,7 @@ import { MatSelectModule } from '@angular/material';
 import { ContentService } from './main-content/content-service';
 import { DataService } from './_services/data.service';
 import { AddDataComponent } from './add-data/add-data.component';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
 	declarations: [
@@ -34,7 +35,8 @@ import { AddDataComponent } from './add-data/add-data.component';
 		SidenavComponent,
 		ToolbarComponent,
 		MainContentComponent,
-		AddDataComponent
+		AddDataComponent,
+		SearchComponent
 	],
 	imports: [
 		BrowserModule,

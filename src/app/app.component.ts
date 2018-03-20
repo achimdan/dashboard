@@ -1,11 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, style, transition, animate, keyframes, query, stagger, state } from '@angular/animations';
-import { FormControl } from '@angular/forms';
-import { ContentService } from './main-content/content-service';
-
-export class State {
-	constructor(public name: string, public population: string, public flag: string) { }
-}
 
 @Component({
 	selector: 'app-root',
@@ -22,13 +16,7 @@ export class State {
 })
 export class AppComponent implements OnInit {
 
-	private myControl: FormControl = new FormControl();
+	constructor() {}
 
-	constructor(private _contentService: ContentService, ) {
-	}
-
-
-	ngOnInit() {
-
-	}
+	ngOnInit() {}
 }
