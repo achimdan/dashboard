@@ -20,7 +20,7 @@ export class SearchComponent implements OnInit {
 
 	ngOnInit() {
 		// this._contentService.getDataList('SEARCH');
-		this._contentService.observableDataSearch
+		this._contentService.observableData
 			.subscribe(values => {
 				this.objects = this._contentService.objects
 			});
