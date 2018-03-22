@@ -19,19 +19,14 @@ export class SearchComponent implements OnInit {
 	constructor(private _contentService: ContentService) {}
 
 	ngOnInit() {
-		// this._contentService.getDataList('SEARCH');
-		this._contentService.observableData
-			.subscribe(values => {
-				this.objects = this._contentService.objects
-			});
+		// this._contentService.observableData
+		// 	.subscribe(values => {
+		// 		this.objects = this._contentService.objects
+		// 	});
 	}
 
 	search(keyword) {
-		if (keyword.length > 0) {
-			this.isShow = true;
-		} else {
-			this.isShow = false;
-		}
+		this._contentService.filterResults(keyword);
 	}
 
 	searchedObj(object) {

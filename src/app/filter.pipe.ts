@@ -13,6 +13,7 @@ export class FilterPipe implements PipeTransform {
 		} else {
 			value = [];
 		}
+		console.log(value);
 		return value;
 	}
 }

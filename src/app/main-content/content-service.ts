@@ -18,7 +18,7 @@ export class ContentService {
 
 	private dataList: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	observableData = this.dataList.asObservable();
-	
+
 	private searchDataList: BehaviorSubject<string> = new BehaviorSubject<string>('SEARCH');
 	observableDataSearch = this.searchDataList.asObservable();
 
@@ -42,6 +42,22 @@ export class ContentService {
 		this.stateSource.next(state);
 	}
 
+	public filterResults(input) {
+		let cloned = this.objects.map(x => Object.assign({}, x));
+
+		if (input.length >= 1) {
+			input = input.toLowerCase();
+			cloned = cloned.filter(function (el: any) {
+				return el.name.toLowerCase().indexOf(input) > -1;
+			})
+		} else {
+			// this.getDataList(this.filters);
+		}
+		// this.objects = cloned;
+		// this.dataList.next(true);
+		console.log(cloned);
+	}
+
 	public getDataList(filter) {
 		this.filters = filter || 'ALL';
 		this._dataService
@@ -52,6 +68,7 @@ export class ContentService {
 				},
 				() => {
 					if (this.filters === 'ALL') {
+						this.objects = this._response.filter((object) => object.isDeleted === false);
 						this.objects = this._response.filter((object) => object.isDeleted === false);
 					} else if (this.filters === 'DELETED') {
 						this.objects = this._response.filter((object) => object.isDeleted === true);
@@ -64,7 +81,7 @@ export class ContentService {
 						});
 					}
 					this.objects.forEach(element => {
-						if(element.sharing === 1) element.sharing = 'Public';
+						if (element.sharing === 1) element.sharing = 'Public';
 						else if (element.sharing === 2) element.sharing = 'Sharerd';
 						else element.sharing = 'Private';
 					});
@@ -145,7 +162,7 @@ export class ContentService {
 		this.dataList.next(true);
 		this.showButtons(false);
 	}
-	
+
 	public changeTheState(files) {
 		this.objects = this.objects.filter((i) => (files.objects.indexOf(i) === -1));
 		for (let object of files.objects) {

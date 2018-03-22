@@ -4,10 +4,10 @@
 		(keyup)="search(keyword)"
 		[(ngModel)]="keyword"
 		matInput>
-	<ul *ngIf="isShow" class="search-list">
+	<!-- <ul *ngIf="isShow" class="search-list">
 		<li *ngFor="let object of objects | FilterPipe: keyword"
 			(click)="searchedObj(object)">
 			{{object.name}}
 		</li>
-	</ul>
+	</ul> -->
 </mat-form-field>
