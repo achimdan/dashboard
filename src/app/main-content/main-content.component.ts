@@ -5,6 +5,8 @@ import { ContentInterface } from '../main-content/content-interface';
 import { MatTableDataSource, MatSort } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 
+import { MainServiceService } from '../_services/main-service.service';
+
 @Component({
 	selector: 'main-content',
 	templateUrl: './main-content.component.html',
@@ -21,27 +23,39 @@ export class MainContentComponent implements OnInit {
 	dataSource: any;
 	selection = new SelectionModel<any>(true, []);
 
-	objectsFormGroup : FormGroup;
+	objectsFormGroup: FormGroup;
 
-	constructor(private _contentService: ContentService, private formBuilder: FormBuilder) { }
+	_response: any;
+	constructor(private _mainService: MainServiceService, private _contentService: ContentService, private formBuilder: FormBuilder) { }
 
 	ngOnInit() {
 		// this._contentService.getDataList(this.filter || 'ALL');
-		this._contentService.observableData
-			.subscribe(
-				values => {
-					if (values) {
-						this.objects = this._contentService.objects;
-						this.dataSource = new MatTableDataSource(this.objects);
-						this.dataSource.sort = this.sort;
-					}
-				}
-			);
+		// this._contentService.observableData
+		// 	.subscribe(
+		// 		values => {
+		// 			if (values) {
+		// 				this.objects = this._contentService.objects;
+		// 				this.dataSource = new MatTableDataSource(this.objects);
+		// 				this.dataSource.sort = this.sort;
+		// 			}
+		// 		}
+		// 	);
 
-		this.objectsFormGroup = this.formBuilder.group({
-			objects: this.formBuilder.array([])
-		});
-		
+		// this.objectsFormGroup = this.formBuilder.group({
+		// 	objects: this.formBuilder.array([])
+		// });
+
+		this._mainService.getDataList()
+			.subscribe((data: any) => this._response = data,
+				error => () => {
+					console.log(error);
+				},
+				() => {
+					this.objects = this._response;
+					this.dataSource = new MatTableDataSource(this.objects);
+					this.dataSource.sort = this.sort;
+				});
+
 	}
 
 	isAllSelected() {

@@ -58,37 +58,37 @@ export class ContentService {
 		console.log(cloned);
 	}
 
-	public getDataList(filter) {
-		this.filters = filter || 'ALL';
-		this._dataService
-			.getAllData<ContentInterface>('../assets/data/data.json')
-			.subscribe((data: ContentInterface) => this._response = data,
-				error => () => {
-					console.log(error);
-				},
-				() => {
-					if (this.filters === 'ALL') {
-						this.objects = this._response.filter((object) => object.isDeleted === false);
-						this.objects = this._response.filter((object) => object.isDeleted === false);
-					} else if (this.filters === 'DELETED') {
-						this.objects = this._response.filter((object) => object.isDeleted === true);
-					} else {
-						const startDate = new Date('2018-03-09T03:57:32');
-						const endDate = new Date();
-						this.objects = this._response.filter((object) => {
-							object.lastAccessedDate = new Date(object.lastAccessedDate);
-							return object.lastAccessedDate >= startDate;
-						});
-					}
-					this.objects.forEach(element => {
-						if (element.sharing === 1) element.sharing = 'Public';
-						else if (element.sharing === 2) element.sharing = 'Sharerd';
-						else element.sharing = 'Private';
-					});
-					// this.searchDataList.next('SEARCH');
-					this.dataList.next(true);
-				});
-	}
+	// public getDataList(filter) {
+	// 	this.filters = filter || 'ALL';
+	// 	this._dataService
+	// 		.getAllData<ContentInterface>('../assets/data/data.json')
+	// 		.subscribe((data: ContentInterface) => this._response = data,
+	// 			error => () => {
+	// 				console.log(error);
+	// 			},
+	// 			() => {
+	// 				if (this.filters === 'ALL') {
+	// 					this.objects = this._response.filter((object) => object.isDeleted === false);
+	// 					this.objects = this._response.filter((object) => object.isDeleted === false);
+	// 				} else if (this.filters === 'DELETED') {
+	// 					this.objects = this._response.filter((object) => object.isDeleted === true);
+	// 				} else {
+	// 					const startDate = new Date('2018-03-09T03:57:32');
+	// 					const endDate = new Date();
+	// 					this.objects = this._response.filter((object) => {
+	// 						object.lastAccessedDate = new Date(object.lastAccessedDate);
+	// 						return object.lastAccessedDate >= startDate;
+	// 					});
+	// 				}
+	// 				this.objects.forEach(element => {
+	// 					if (element.sharing === 1) element.sharing = 'Public';
+	// 					else if (element.sharing === 2) element.sharing = 'Sharerd';
+	// 					else element.sharing = 'Private';
+	// 				});
+	// 				// this.searchDataList.next('SEARCH');
+	// 				this.dataList.next(true);
+	// 			});
+	// }
 
 	public addDataObject(dataObject: ContentInterface) {
 		let isDuppie;
@@ -115,9 +115,9 @@ export class ContentService {
 		this.toShowButtons.next(value);
 	}
 
-	public sendFilter(filter) {
-		this.getDataList(filter);
-	}
+	// public sendFilter(filter) {
+	// 	this.getDataList(filter);
+	// }
 
 	onChange(event) {
 

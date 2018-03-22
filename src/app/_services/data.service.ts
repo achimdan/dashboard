@@ -7,7 +7,7 @@ export class DataService {
 
 	private _baseUrl: string;
 
-	constructor(private _http: HttpClient,) { }
+	constructor(private _http: HttpClient) { }
 
 	public getAllData<T>(path: string): Observable<T> {
 		const url = `${this._baseUrl}/${path}`;

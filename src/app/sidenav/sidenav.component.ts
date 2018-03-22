@@ -39,7 +39,7 @@ export class SidenavComponent implements OnInit {
 	filterFiles(button: any) {
 		this._contentService.showButtons(false);
 		this.selectedButton = button;
-		this._contentService.sendFilter(button.filter || 'ALL');
+		// this._contentService.sendFilter(button.filter || 'ALL');
 		this._contentService.changeState(button.filter);
 	}
 

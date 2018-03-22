@@ -24,6 +24,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSortModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material';
 
+import { MainServiceService } from './_services/main-service.service';
 import { ContentService } from './main-content/content-service';
 import { DataService } from './_services/data.service';
 import { AddDataComponent } from './add-data/add-data.component';
@@ -66,7 +67,7 @@ import { FilterPipe } from './filter.pipe';
 	entryComponents: [
 		AddDataComponent,
 	],
-	providers: [ContentService,DataService],
+	providers: [ContentService,DataService,MainServiceService],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

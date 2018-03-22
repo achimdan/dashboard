@@ -3,7 +3,9 @@ import { ContentService } from '../main-content/content-service';
 import { FormsModule } from '@angular/forms';
 import { Pipe, PipeTransform } from '@angular/core';
 
-import {FilterPipe} from '../filter.pipe'
+import {FilterPipe} from '../filter.pipe';
+
+import { MainServiceService } from '../_services/main-service.service';
 
 @Component({
 	selector: 'app-search',
@@ -12,11 +14,7 @@ import {FilterPipe} from '../filter.pipe'
 })
 export class SearchComponent implements OnInit {
 
-	isShow = false;
-	filter: string;
-	objects: any;
-
-	constructor(private _contentService: ContentService) {}
+	constructor(private _contentService: ContentService, private _mainService: MainServiceService) {}
 
 	ngOnInit() {
 		// this._contentService.observableData
@@ -25,8 +23,11 @@ export class SearchComponent implements OnInit {
 		// 	});
 	}
 
+	// search(keyword) {
+	// 	this._contentService.filterResults(keyword);
+	// }
 	search(keyword) {
-		this._contentService.filterResults(keyword);
+		this._mainService.filterResults(keyword);
 	}
 
 	searchedObj(object) {
