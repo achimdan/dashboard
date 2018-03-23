@@ -25,10 +25,19 @@ export class ToolbarComponent implements OnInit {
 				this._contentService.whatToShow.subscribe( isShow => this.isShow = isShow);
 				this.isResored = false;
 			} else {
-				this._contentService.whatToShow.subscribe( isShow => this.isShow = false);
+				this._contentService.whatToShow.subscribe( isShow => {
+					this.isShow = false
+				});
 				this.isResored = true;
 			}
 		});
+
+		// this._contentService.whatToShow.subscribe( button => {
+		// 	console.log(button)
+		// 	if (button) { 
+		// 		this.isShow = true;
+		// 	}
+		// })
 	}
 
 	newFile() {

@@ -8,6 +8,8 @@ import { fromEvent } from 'rxjs/observable/fromEvent';
 import { pluck, debounceTime, map, distinctUntilChanged } from 'rxjs/operators';
 import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
 
+import { MainServiceService } from '../_services/main-service.service';
+
 @Injectable()
 export class ContentService {
 	private _response: any;
@@ -32,7 +34,7 @@ export class ContentService {
 
 	theFiles = [];
 
-	constructor(private _dataService: DataService, private formBuilder: FormBuilder) {
+	constructor(private _mainService: MainServiceService, private _dataService: DataService, private formBuilder: FormBuilder) {
 		this.objectsFormGroup = this.formBuilder.group({
 			objects: this.formBuilder.array([])
 		});
@@ -42,74 +44,26 @@ export class ContentService {
 		this.stateSource.next(state);
 	}
 
-	public filterResults(input) {
-		let cloned = this.objects.map(x => Object.assign({}, x));
-
-		if (input.length >= 1) {
-			input = input.toLowerCase();
-			cloned = cloned.filter(function (el: any) {
-				return el.name.toLowerCase().indexOf(input) > -1;
-			})
-		} else {
-			// this.getDataList(this.filters);
-		}
-		// this.objects = cloned;
-		// this.dataList.next(true);
-		console.log(cloned);
-	}
-
-	// public getDataList(filter) {
-	// 	this.filters = filter || 'ALL';
-	// 	this._dataService
-	// 		.getAllData<ContentInterface>('../assets/data/data.json')
-	// 		.subscribe((data: ContentInterface) => this._response = data,
-	// 			error => () => {
-	// 				console.log(error);
-	// 			},
-	// 			() => {
-	// 				if (this.filters === 'ALL') {
-	// 					this.objects = this._response.filter((object) => object.isDeleted === false);
-	// 					this.objects = this._response.filter((object) => object.isDeleted === false);
-	// 				} else if (this.filters === 'DELETED') {
-	// 					this.objects = this._response.filter((object) => object.isDeleted === true);
-	// 				} else {
-	// 					const startDate = new Date('2018-03-09T03:57:32');
-	// 					const endDate = new Date();
-	// 					this.objects = this._response.filter((object) => {
-	// 						object.lastAccessedDate = new Date(object.lastAccessedDate);
-	// 						return object.lastAccessedDate >= startDate;
-	// 					});
-	// 				}
-	// 				this.objects.forEach(element => {
-	// 					if (element.sharing === 1) element.sharing = 'Public';
-	// 					else if (element.sharing === 2) element.sharing = 'Sharerd';
-	// 					else element.sharing = 'Private';
-	// 				});
-	// 				// this.searchDataList.next('SEARCH');
-	// 				this.dataList.next(true);
-	// 			});
+	// public addDataObject(dataObject: ContentInterface) {
+	// 	let isDuppie;
+	// 	this.objects.forEach(element => {
+	// 		if (dataObject.name === element.name) {
+	// 			isDuppie = false;
+	// 		}
+	// 	})
+	// 	if (isDuppie !== false) {
+	// 		dataObject = {
+	// 			guid: 'string',
+	// 			isDeleted: false,
+	// 			sizeBytes: 23253488,
+	// 			name: dataObject.name,
+	// 			sharing: 'Shared',
+	// 			lastAccessedDate: new Date().toString()
+	// 		}
+	// 		this.objects.push(dataObject);
+	// 		this.dataList.next(true);
+	// 	}
 	// }
-
-	public addDataObject(dataObject: ContentInterface) {
-		let isDuppie;
-		this.objects.forEach(element => {
-			if (dataObject.name === element.name) {
-				isDuppie = false;
-			}
-		})
-		if (isDuppie !== false) {
-			dataObject = {
-				guid: 'string',
-				isDeleted: false,
-				sizeBytes: 23253488,
-				name: dataObject.name,
-				sharing: 2,
-				lastAccessedDate: new Date().toString()
-			}
-			this.objects.push(dataObject);
-			this.dataList.next(true);
-		}
-	}
 
 	public showButtons(value) {
 		this.toShowButtons.next(value);
@@ -119,7 +73,8 @@ export class ContentService {
 	// 	this.getDataList(filter);
 	// }
 
-	onChange(event) {
+	onChange(event, objects) {
+		this.objects = objects;
 
 		this.formObjects = <FormArray>this.objectsFormGroup.get('objects') as FormArray;
 
@@ -147,7 +102,7 @@ export class ContentService {
 		}
 		this.objectsFormGroup.value.objects.length = 0;
 		this.formObjects.controls = [];
-		this.dataList.next(true);
+		this._mainService.dataList.next(true);
 		this.showButtons(false);
 	}
 
@@ -159,7 +114,7 @@ export class ContentService {
 		}
 		this.objectsFormGroup.value.objects.length = 0;
 		this.formObjects.controls = [];
-		this.dataList.next(true);
+		this._mainService.dataList.next(true);
 		this.showButtons(false);
 	}
 

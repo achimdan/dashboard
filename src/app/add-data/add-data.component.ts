@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { BehaviorSubject } from 'rxjs/Rx';
 
-import { ContentService } from '../main-content/content-service';
+import { MainServiceService } from '../_services/main-service.service';
 
 @Component({
 	selector: 'app-add-data',
@@ -16,11 +16,13 @@ export class AddDataComponent {
 	constructor(
 		public dialogRef: MatDialogRef<AddDataComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: any,
-		private _contentService: ContentService) { }
+		private _mainService: MainServiceService) { }
 
 	sendData(data) {
 		if (data.name) {
-			this._contentService.addDataObject(data);
+			// this._mainService.addDataObject(data);
+			// this._mainService.dataList.next(true);
+			this._mainService.objectToFiles.next(data);
 			this.onNoClick()
 		}
 	}
